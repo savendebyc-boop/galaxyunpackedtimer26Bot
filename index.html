@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Unpacked | Countdown</title>
+    <style>
+        @import url('https://fonts.googleapis.com');
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            background-color: #000;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 1;
+        }
+
+        /* Эффект свечения на фоне */
+        .background-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(63, 94, 251, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
+            filter: blur(50px);
+            z-index: 0;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            margin-bottom: 50px;
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+
+        .countdown {
+            display: flex;
+            gap: 40px;
+        }
+
+        .time-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .number {
+            font-size: 6rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(180deg, #fff 30%, #666 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 10px;
+            color: #888;
+        }
+
+        .event-ended {
+            display: none;
+            font-size: 3rem;
+            font-weight: 500;
+            background: linear-gradient(90deg, #fff, #3f5efb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Анимация появления */
+        .fade-in {
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 600px) {
+            .countdown { gap: 20px; }
+            .number { font-size: 3rem; }
+            h1 { font-size: 0.8rem; letter-spacing: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-glow"></div>
+
+    <div class="container fade-in">
+        <h1>Galaxy Unpacked 2025</h1>
+        
+        <div class="countdown" id="timer">
+            <div class="time-block">
+                <span class="number" id="days">00</span>
+                <span class="label">Дней</span>
+            </div>
+            <div class="time-block">
+                <span class="number" id="hours">00</span>
+                <span class="label">Часов</span>
+            </div>
+            <div class="time-block">
+                <span class="number" id="minutes">00</span>
+                <span class="label">Минут</span>
+            </div>
+            <div class="time-block">
+                <span class="number" id="seconds">00</span>
+                <span class="label">Секунд</span>
+            </div>
+        </div>
+
+        <div id="message" class="event-ended">СОБЫТИЕ НАЧАЛОСЬ</div>
+    </div>
+
+    <script>
+        // Установка целевой даты: 25 февраля 2025, 21:00:00
+        const targetDate = new Date("Feb 25, 2025 21:00:00").getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance < 0) {
+                document.getElementById("timer").style.display = "none";
+                document.getElementById("message").style.display = "block";
+                return;
+            }
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById("days").innerText = String(days).padStart(2, '0');
+            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+        }
+
+        // Обновление каждую секунду
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+    </script>
+</body>
+</html>
