@@ -1,157 +1,158 @@
+
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Galaxy Unpacked | Countdown</title>
+    <title>Galaxy Unpacked 2026</title>
     <style>
         @import url('https://fonts.googleapis.com');
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
             background-color: #000;
             color: #fff;
             font-family: 'Inter', sans-serif;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
         }
 
-        .container {
-            text-align: center;
-            z-index: 1;
-        }
-
-        /* Эффект свечения на фоне */
-        .background-glow {
+        .glow {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(63, 94, 251, 0.2) 0%, rgba(0, 0, 0, 0) 70%);
-            filter: blur(50px);
+            width: 80vw;
+            height: 80vw;
+            background: radial-gradient(circle, rgba(60, 100, 255, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+            border-radius: 50%;
             z-index: 0;
+            animation: pulse 6s infinite alternate;
         }
 
-        h1 {
+        @keyframes pulse { from { opacity: 0.4; } to { opacity: 0.8; } }
+
+        .content { position: relative; z-index: 1; text-align: center; }
+
+        .title {
             font-weight: 300;
-            letter-spacing: 10px;
+            letter-spacing: 0.6em;
             text-transform: uppercase;
-            margin-bottom: 50px;
-            font-size: 1.2rem;
-            opacity: 0.8;
+            font-size: 0.9rem;
+            margin-bottom: 3rem;
+            color: rgba(255, 255, 255, 0.6);
         }
 
-        .countdown {
-            display: flex;
-            gap: 40px;
-        }
+        .timer { display: flex; gap: 2rem; }
 
-        .time-block {
-            display: flex;
-            flex-direction: column;
-        }
+        .unit { display: flex; flex-direction: column; min-width: 100px; }
 
         .number {
             font-size: 6rem;
             font-weight: 700;
-            line-height: 1;
-            background: linear-gradient(180deg, #fff 30%, #666 100%);
+            letter-spacing: -0.05em;
+            line-height: 0.9;
+            background: linear-gradient(180deg, #FFFFFF 40%, #444 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-top: 10px;
-            color: #888;
+            letter-spacing: 0.3em;
+            margin-top: 1rem;
+            color: #666;
         }
 
-        .event-ended {
+        #message {
             display: none;
             font-size: 3rem;
-            font-weight: 500;
-            background: linear-gradient(90deg, #fff, #3f5efb);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #fff, #3a7bd5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Анимация появления */
-        .fade-in {
-            animation: fadeIn 2s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         @media (max-width: 600px) {
-            .countdown { gap: 20px; }
+            .timer { gap: 1rem; }
             .number { font-size: 3rem; }
-            h1 { font-size: 0.8rem; letter-spacing: 5px; }
+            .unit { min-width: 60px; }
+            .title { letter-spacing: 0.3em; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="background-glow"></div>
+    <div class="glow"></div>
 
-    <div class="container fade-in">
-        <h1>Galaxy Unpacked 2025</h1>
+    <div class="content">
+        <div class="title">Next Galaxy Unpacked</div>
         
-        <div class="countdown" id="timer">
-            <div class="time-block">
-                <span class="number" id="days">00</span>
-                <span class="label">Дней</span>
-            </div>
-            <div class="time-block">
+        <div class="timer" id="timer">
+            <div class="unit">
                 <span class="number" id="hours">00</span>
-                <span class="label">Часов</span>
+                <span class="label">Hours</span>
             </div>
-            <div class="time-block">
+            <div class="unit">
                 <span class="number" id="minutes">00</span>
-                <span class="label">Минут</span>
+                <span class="label">Min</span>
             </div>
-            <div class="time-block">
+            <div class="unit">
                 <span class="number" id="seconds">00</span>
-                <span class="label">Секунд</span>
+                <span class="label">Sec</span>
             </div>
         </div>
 
-        <div id="message" class="event-ended">СОБЫТИЕ НАЧАЛОСЬ</div>
+        <div id="message">Coming Soon</div>
     </div>
 
     <script>
-        // Установка целевой даты: 25 февраля 2025, 21:00:00
-        const targetDate = new Date("Feb 25, 2025 21:00:00").getTime();
+        // ДАТА: 25 февраля 2026 года, 21:00 по Москве (UTC+3)
+        const targetDate = new Date("2026-02-25T21:00:00+03:00").getTime();
 
-        function updateCountdown() {
+        function update() {
             const now = new Date().getTime();
-            const distance = targetDate - now;
+            const diff = targetDate - now;
 
-            if (distance < 0) {
+            if (diff <= 0) {
                 document.getElementById("timer").style.display = "none";
+                document.querySelector(".title").style.display = "none";
                 document.getElementById("message").style.display = "block";
                 return;
             }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            // Расчет (дни убраны для компактности, всё переведено в часы)
+            const h = Math.floor(diff / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
 
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
+            document.getElementById("hours").innerText = String(h).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(m).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(s).padStart(2, '0');
+        }
+
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
+
+
+            document.getElementById("days").innerText = String(d).padStart(2, '0');
+            document.getElementById("hours").innerText = String(h).padStart(2, '0');
+            document.getElementById("minutes").innerText = String(m).padStart(2, '0');
+            document.getElementById("seconds").innerText = String(s).padStart(2, '0');
+        }
+
+        setInterval(update, 1000);
+        update();
+    </script>
+</body>
+</html>
+);
         }
 
         // Обновление каждую секунду
